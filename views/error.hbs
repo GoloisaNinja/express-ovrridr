@@ -1,0 +1,27 @@
+<html lang="en" data-bs-theme="dark">
+<head>
+    {{> head}}
+</head>
+<body>
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h1 class="display-4 fw-bold text-body-emphasis">Four OH(NO) Four</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">You thought you could go rogue and there would be no consequences? Yeah. Ok. Fine. No consequences. But still, {{url}} is not a valid route.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+            <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3" id="btn-back">Dashboard</button>
+        </div>
+    </div>
+    <div class="overflow-hidden" style="max-height: 30vh;">
+        <div class="container px-5">
+            <img src="/images/heretherebedragons.webp" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Here there be dragons wiki page" width="700" height="500" loading="lazy">
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    document.getElementById('btn-back').addEventListener('click', () => {
+        window.location.href = '/dashboard';
+    })
+</script>
+</html>

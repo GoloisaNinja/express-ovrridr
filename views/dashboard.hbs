@@ -1,0 +1,206 @@
+<html lang="en" data-bs-theme="dark">
+<head>
+    {{> head }}
+</head>
+<body>
+<div class="container my-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis">Welcome to Express Ovrridr {{user.name}}!</h1>
+            <p class="lead">When something is worth doing - its worth doing meh. Ovrridr Express is less fraught
+                with design flaws and opportunities for mischief.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold" id="btn-logout">Log Out
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="btn-rickroll">Not a Rick Roll</button>
+            </div>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+            <img class="rounded-lg-3" src="/images/programming.png" alt="cute programming computer icon"
+                 width="720"/>
+        </div>
+    </div>
+</div>
+<div class="container my-5">
+    <h2 class="display-6 fw-bold lh-1 text-body-emphasis">This my App. Entry please.</h2>
+</div>
+<div class="container d-flex flex-column flex-md-row px-0 gap-4 mb-5 pb-3 align-items-center justify-content-left">
+    <div class="list-group list-group-checkable d-grid gap-2 border-0 px-0">
+        <div id="radio-users">
+            <input class="list-group-item-check pe-none"
+                   type="radio" name="listGroupCheckableRadios"
+                   id="listGroupCheckableRadios1"
+                   value="users"
+            />
+            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios1">
+                Users
+                <span class="d-block small opacity-50">Query Ovrridr Users</span>
+            </label>
+        </div>
+        <div id="radio-products">
+            <input class="list-group-item-check pe-none"
+                   type="radio" name="listGroupCheckableRadios"
+                   id="listGroupCheckableRadios2"
+                   value="products"
+            />
+            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios2">
+                Products
+                <span class="d-block small opacity-50">Query Ovrridr Products</span>
+            </label>
+        </div>
+        <div id="radio-permissions">
+            <input class="list-group-item-check pe-none"
+                   type="radio"
+                   name="listGroupCheckableRadios"
+                   id="listGroupCheckableRadios3"
+                   value="permissions"
+            />
+            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios3">
+                Permissions
+                <span class="d-block small opacity-50">Query Overridr Permissions by User</span>
+        </label>
+        </div>
+        <button class="btn btn-warning w-100 py-2 my-3" id="btn-submit" disabled>Submit</button>
+    </div>
+</div>
+<div class="px-3 w-100 d-none" id="data-table">
+    <table class="table table-dark table-hover w-75">
+        <thead class="table-light">
+        <tr class="table-light" id="data-table-headers"></tr>
+        </thead>
+        <tbody id="data-table-body"></tbody>
+    </table>
+</div>
+</body>
+<script type="module">
+    // Globals
+    import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
+    // Radios
+    const radioContainers = document.querySelectorAll('div[id^="radio-"]')
+    const radios = document.querySelectorAll('input')
+    // Buttons
+    const submitBtn = document.getElementById('btn-submit');
+    const logoutBtn = document.getElementById('btn-logout');
+    const rickRollBtn = document.getElementById('btn-rickroll');
+    // Table stuff
+    const table = document.getElementById("data-table");
+    const tableBody = document.getElementById("data-table-body");
+    const tableHeaders = document.getElementById("data-table-headers");
+    let data = {};
+    // Table Functions
+    const emptyTable = () => {
+        while (tableHeaders.firstChild) {
+            tableHeaders.removeChild(tableHeaders.lastChild);
+        }
+        while(tableBody.firstChild) {
+            tableBody.removeChild(tableBody.lastChild);
+        }
+    }
+    const buildHeaders = (data) => {
+        for (let key of Object.keys(data[0])) {
+            let th = document.createElement("th");
+            Object.assign(th, {
+                className: "table-light fs-sm",
+                id: uuidv4(),
+                innerHTML: key
+            });
+            tableHeaders.appendChild(th);
+        }
+        for (let i = 0; i < data.length; i++) {
+            buildRow(i);
+        }
+    }
+    const buildRow = (pos) => {
+        let newRow = document.createElement("tr");
+        let id = uuidv4();
+        newRow.id = id;
+        tableBody.appendChild(newRow);
+        buildData(pos, id);
+    }
+    const buildData = (pos,id) => {
+        let rowToAppend = document.getElementById(id);
+            for (let key of Object.values(data[pos])) {
+                let td = document.createElement("td");
+                if (typeof key === 'object') {
+                    key = JSON.stringify(key);
+                }
+                td.className = "fs-xsm";
+                td.innerText = key;
+                rowToAppend.appendChild(td);
+           }
+    }
+    // GET request
+    const fetchData = (endpoint) => {
+        try {
+            let headers = {
+                "Content-type": "application/json"
+            }
+            fetch(endpoint, {
+                method: "GET",
+                headers,
+            }).then((res) => {
+                if (res.status === 200) {
+                    emptyTable();
+                    res.json().then((parsedResp) => {
+                        data = parsedResp;
+                        table.classList.remove("d-none")
+                        buildHeaders(data)
+                    })
+                } else {
+                    window.alert(res.status + "\n" + res.statusText);
+                }
+            })
+        } catch(error) {
+            console.log(error)
+            window.alert('There was a problem...')
+        }
+    }
+    // Logout
+    const fetchLogout = () => {
+        let endpoint = "/logout";
+        const headers = {
+            "Content-type": "application/json",
+        };
+        try {
+            fetch(endpoint, {
+                method: "POST",
+                headers,
+            }).then((res) => {
+                if (res.status === 200) {
+                    window.location.href = '/'
+                }
+            })
+        } catch (error) {
+            console.log(error);
+            window.alert("Problem logging out...")
+        }
+    }
+    // Listeners
+    logoutBtn.addEventListener('click', fetchLogout)
+    rickRollBtn.addEventListener('click', () => {
+        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+    })
+    submitBtn.addEventListener('click', () => {
+        let endpoint = '/dashboard/';
+        Array.from(radios).forEach((radio) => {
+            if (radio.checked) {
+                endpoint += radio.value;
+            }
+        });
+        fetchData(endpoint);
+    })
+    const radioListener = () => {
+        document.getElementById('btn-submit').removeAttribute('disabled')
+    }
+    // Radios based on access
+    radioContainers.forEach((el) => {
+        const permissions = {{permissions.permissions}}
+        el.addEventListener('click', radioListener);
+        let id = el.id.substring(6,);
+        let formatted = id[0].toUpperCase() + id.slice(1).toLowerCase();
+        if (!permissions['view'+formatted]) {
+            el.classList.add('d-none');
+        }
+    })
+</script>
+</html>
