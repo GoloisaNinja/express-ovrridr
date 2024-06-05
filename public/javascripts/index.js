@@ -49,13 +49,15 @@ submitBtn.addEventListener('click', (e) => {
             body: JSON.stringify(body),
         }).then((res) => {
             if (res.status !== 200) {
-                window.alert(res.statusText);
+                window.alert("Problem logging in \n" + res.statusText);
             } else {
                 window.location.href = '/dashboard';
             }
         }).catch((error) => {
             console.log(error)
         })
+    } else {
+        window.alert("Forms need filled out fields!")
     }
 
 })

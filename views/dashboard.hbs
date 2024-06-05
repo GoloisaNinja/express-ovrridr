@@ -26,40 +26,47 @@
 </div>
 <div class="container d-flex flex-column flex-md-row px-0 gap-4 mb-5 pb-3 align-items-center justify-content-left">
     <div class="list-group list-group-checkable d-grid gap-2 border-0 px-0">
-        <div id="radio-users">
-            <input class="list-group-item-check pe-none"
-                   type="radio" name="listGroupCheckableRadios"
-                   id="listGroupCheckableRadios1"
-                   value="users"
-            />
-            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios1">
-                Users
-                <span class="d-block small opacity-50">Query Ovrridr Users</span>
-            </label>
-        </div>
-        <div id="radio-products">
-            <input class="list-group-item-check pe-none"
-                   type="radio" name="listGroupCheckableRadios"
-                   id="listGroupCheckableRadios2"
-                   value="products"
-            />
-            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios2">
-                Products
-                <span class="d-block small opacity-50">Query Ovrridr Products</span>
-            </label>
-        </div>
-        <div id="radio-permissions">
-            <input class="list-group-item-check pe-none"
-                   type="radio"
-                   name="listGroupCheckableRadios"
-                   id="listGroupCheckableRadios3"
-                   value="permissions"
-            />
-            <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios3">
-                Permissions
-                <span class="d-block small opacity-50">Query Overridr Permissions by User</span>
-        </label>
-        </div>
+        {{#if permissions.permissions.viewUsers}}
+            <div id="radio-users">
+                <input class="list-group-item-check pe-none"
+                       type="radio" name="listGroupCheckableRadios"
+                       id="listGroupCheckableRadios1"
+                       value="users"
+                />
+                <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios1">
+                    Users
+                    <span class="d-block small opacity-50">Query Ovrridr Users</span>
+                </label>
+            </div>
+        {{/if}}
+        {{#if permissions.permissions.viewProducts}}
+            <div id="radio-products">
+                <input class="list-group-item-check pe-none"
+                       type="radio" name="listGroupCheckableRadios"
+                       id="listGroupCheckableRadios2"
+                       value="products"
+                />
+                <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios2">
+                    Products
+                    <span class="d-block small opacity-50">Query Ovrridr Products</span>
+                </label>
+            </div>
+        {{/if}}
+        {{#if permissions.permissions.viewPermissions}}
+            <div id="radio-permissions">
+                <input class="list-group-item-check pe-none"
+                       type="radio"
+                       name="listGroupCheckableRadios"
+                       id="listGroupCheckableRadios3"
+                       value="permissions"
+                />
+                <label class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios3">
+                    Permissions
+                    <span class="d-block small opacity-50">Query Overridr Permissions by User</span>
+                </label>
+            </div>
+        {{/if}}
+
         <button class="btn btn-warning w-100 py-2 my-3" id="btn-submit" disabled>Submit</button>
     </div>
 </div>
